@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { TeamManager } from "@/components/billing/team-manager";
 import { PricingToggle } from "@/components/billing/pricing-toggle";
 import { BillingPortalButton } from "@/components/billing/portal-button";
+import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
   const session = await auth();
@@ -25,7 +26,7 @@ export default async function DashboardPage() {
     }
   });
 
-  if (!member) return <div>No organization found</div>;
+  if (!member) redirect("/onboarding");
 
   return (
     <div className="container mx-auto py-10 space-y-10">
