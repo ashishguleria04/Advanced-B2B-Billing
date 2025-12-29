@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Advanced B2B Billing & SaaS Starter
 
-## Getting Started
+A robust, production-ready starter kit for building B2B SaaS applications. Built with **Next.js 16**, **Stripe**, **Drizzle ORM**, and **Tailwind CSS**, this project implements advanced billing patterns, multi-tenancy, and team management out of the box.
 
-First, run the development server:
+## 🚀 Features
+
+- **Multi-Tenancy Architecture**: Built-in support for Organizations and Members.
+- **Advanced Billing with Stripe**:
+  - Subscription Management (Per-seat, Tiered).
+  - **Usage-Based Billing**: Metered usage reporting to Stripe.
+  - Customer Portal integration.
+  - Resilient Webhook handling.
+- **Team Management**:
+  - Invite system with expiration.
+  - Role-based access control (Owner, Admin, Member).
+- **Modern Stack**:
+  - Next.js 16 (App Router & Server Actions).
+  - TypeScript & Strict Type Safety.
+  - Drizzle ORM with PostgreSQL.
+  - Authentication via NextAuth.js (v5).
+  - UI Components with Tailwind CSS & Radix UI.
+
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js 16](https://nextjs.org/)
+- **Database**: [PostgreSQL](https://www.postgresql.org/)
+- **ORM**: [Drizzle ORM](https://orm.drizzle.team/)
+- **Payments**: [Stripe](https://stripe.com/)
+- **Auth**: [Auth.js (NextAuth)](https://authjs.dev/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+
+## 🏁 Getting Started
+
+### 1. Prerequisites
+
+- Node.js 18+ installed.
+- A PostgreSQL database (local or hosted e.g., Neon, Supabase).
+- A Stripe account with test mode API keys.
+
+### 2. Installation
+
+Clone the repository and install dependencies:
+
+```bash
+git clone <repository-url>
+cd b2b-billing
+npm install
+```
+
+### 3. Environment Configuration
+
+Create a `.env` file in the root directory based on `.env.example`:
+
+```bash
+cp env.example .env
+```
+
+Fill in your environment variables:
+
+```env
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/b2b_billing"
+
+# Stripe
+STRIPE_SECRET_KEY="sk_test_..."
+STRIPE_WEBHOOK_SECRET="whsec_..."
+
+# Authentication
+# Generate a secret: npx auth secret
+AUTH_SECRET="your-generated-secret"
+NEXTAUTH_URL="http://localhost:3000"
+```
+
+### 4. Database Setup
+
+Push the schema to your database:
+
+```bash
+npx drizzle-kit push
+```
+
+### 5. Running the App
+
+Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit [http://localhost:3000](http://localhost:3000) to see the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 💳 Stripe Setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1.  **Create Products**: In your Stripe Dashboard, create your subscription products.
+2.  **Webhooks**:
+    -   Use the Stripe CLI to forward webhooks locally: `stripe listen --forward-to localhost:3000/api/webhooks/stripe`.
+    -   Copy the Signing Secret (`whsec_...`) to your `.env` file.
+    -   Events to listen for: `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`.
 
-## Learn More
+## 📂 Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+- `actions/`: Server Actions for business logic (Billing, Org management).
+- `app/`: Next.js App Router pages and API routes.
+- `components/`: Reusable UI components.
+- `lib/`: Utilities, Database configuration, and Schema definitions.
+- `drizzle/`: Database migration files.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📜 Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `npm run dev`: Start development server.
+- `npm run build`: Build for production.
+- `npm run lint`: Run ESLint.
 
-## Deploy on Vercel
+## 📄 License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License.
