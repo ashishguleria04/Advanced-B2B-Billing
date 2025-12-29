@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth";
 import { db } from "@/lib/db";
-import { organizations, members, invitations, roleEnum } from "@/lib/schema";
+import { organizations, members, invitations } from "@/lib/schema";
 import { eq, and } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 

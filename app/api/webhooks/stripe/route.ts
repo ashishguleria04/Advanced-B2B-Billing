@@ -17,12 +17,16 @@ export async function POST(req: Request) {
             signature,
             process.env.STRIPE_WEBHOOK_SECRET!
         );
-    } catch (err) {
+    } catch (err: unknown) {
+        if (err instanceof Error) {
+            console.error("Webhook verification failed", err.message);
+        } else {
+            console.error("Webhook verification failed", err);
+        }
         return new NextResponse("Webhook Error", { status: 400 });
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const session = event.data.object as any;
+
 
     try {
         switch (event.type) {
