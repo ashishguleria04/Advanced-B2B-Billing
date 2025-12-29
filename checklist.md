@@ -13,5 +13,6 @@
 - [ ] Proceed with feature implementation (TBD)
 
 **Status Update:**
+- **Onboarding Flow:** Implemented /onboarding page and creating organization form. Dashboard now redirects to onboarding for new users.
 - Build and Lint checks passed successfully on 2025-12-29.
 - Ready for next feature development.
