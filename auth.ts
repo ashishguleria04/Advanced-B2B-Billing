@@ -1,4 +1,6 @@
 import NextAuth from "next-auth"
+import GitHub from "next-auth/providers/github"
+import Google from "next-auth/providers/google"
 import { DrizzleAdapter } from "@auth/drizzle-adapter"
 import { db } from "@/lib/db"
 import { accounts, sessions, users, verificationTokens } from "@/lib/schema"
@@ -10,10 +12,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         sessionsTable: sessions,
         verificationTokensTable: verificationTokens,
     }),
-    providers: [], // User needs to add providers like GitHub, Google, or Email
-    callbacks: {
-        async session({ session }) {
-            return session
-        },
+    providers: [
+        GitHub,
+        Google
+    ],
+    pages: {
+        signIn: '/login'
     },
+    async session({ session }) {
+        return session
+    },
+},
 })
