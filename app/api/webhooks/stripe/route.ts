@@ -21,7 +21,8 @@ export async function POST(req: Request) {
         return new NextResponse("Webhook Error", { status: 400 });
     }
 
-    const session = event.data.object as any; // Type assertion for generic handling
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const session = event.data.object as any;
 
     try {
         switch (event.type) {

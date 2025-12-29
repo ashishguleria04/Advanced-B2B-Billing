@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation"
 
 type Member = {
     id: string;
-    role: string;
+    role: string | null;
     organizationId: string;
     user: {
         name: string | null;
@@ -55,7 +55,7 @@ export function TeamManager({ members, orgId }: { members: Member[], orgId: stri
                     <Input 
                         placeholder="email@example.com" 
                         value={inviteEmail} 
-                        onChange={(e) => setInviteEmail(e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInviteEmail(e.target.value)}
                     />
                 </div>
                 <DialogFooter>
@@ -81,7 +81,7 @@ export function TeamManager({ members, orgId }: { members: Member[], orgId: stri
             <TableRow key={member.id}>
               <TableCell>{member.user.name || "Unknown"}</TableCell>
               <TableCell>{member.user.email}</TableCell>
-              <TableCell className="capitalize">{member.role}</TableCell>
+              <TableCell className="capitalize">{member.role || "member"}</TableCell>
               <TableCell className="text-right">
                 <Button variant="ghost" size="sm">Manage</Button>
               </TableCell>

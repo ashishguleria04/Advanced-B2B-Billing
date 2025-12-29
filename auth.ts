@@ -12,7 +12,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
     providers: [], // User needs to add providers like GitHub, Google, or Email
     callbacks: {
-        async session({ session, user }) {
+        async session({ session }) {
             return session
         },
     },

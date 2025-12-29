@@ -1,8 +1,9 @@
-import { pgTable, text, timestamp, boolean, uuid, integer, pgEnum, primaryKey } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, integer, pgEnum, primaryKey } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 import type { AdapterAccountType } from "@auth/core/adapters";
 
 export const roleEnum = pgEnum("role", ["owner", "admin", "member"]);
-export const subscriptionStatusEnum = pgEnum("subscription_status", ["active", "past_due", "canceled", "incomplete", "trialing"]);
+export const subscriptionStatusEnum = pgEnum("subscription_status", ["active", "past_due", "canceled", "incomplete", "trialing", "unpaid", "incomplete_expired", "paused"]);
 
 export const users = pgTable("user", {
     id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
@@ -84,3 +85,24 @@ export const usageRecords = pgTable("usage_record", {
     quantity: integer("quantity").notNull(),
     timestamp: timestamp("timestamp").defaultNow(),
 });
+
+// Relations
+export const usersRelations = relations(users, ({ many }) => ({
+    members: many(members),
+    accounts: many(accounts),
+}));
+
+export const organizationsRelations = relations(organizations, ({ many }) => ({
+    members: many(members),
+    invitations: many(invitations),
+    usageRecords: many(usageRecords),
+}));
+
+export const membersRelations = relations(members, ({ one }) => ({
+    user: one(users, { fields: [members.userId], references: [users.id] }),
+    organization: one(organizations, { fields: [members.organizationId], references: [organizations.id] }),
+}));
+
+export const invitationsRelations = relations(invitations, ({ one }) => ({
+    organization: one(organizations, { fields: [invitations.organizationId], references: [organizations.id] }),
+}));
