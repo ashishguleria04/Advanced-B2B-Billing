@@ -7,10 +7,10 @@ export default auth((req) => {
     const isLoggedIn = !!req.auth
     const isOnDashboard = req.nextUrl.pathname.startsWith('/dashboard')
     if (isOnDashboard) {
-        if (isLoggedIn) return true
-        return false // Redirect to login
+        if (isLoggedIn) return
+        return Response.redirect(new URL('/api/auth/signin', req.nextUrl))
     }
-    return true
+    return
 })
 
 export const config = {
