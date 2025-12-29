@@ -81,7 +81,8 @@ export async function reportUsage(orgId: string, metric: string, quantity: numbe
         const meteredItem = sub.items.data.find(item => item.price.recurring?.usage_type === 'metered');
 
         if (meteredItem) {
-            await stripe.subscriptionItems.createUsageRecord(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            await (stripe.subscriptionItems as any).createUsageRecord(
                 meteredItem.id,
                 { quantity: quantity, action: 'increment' }
             );
