@@ -27,10 +27,8 @@ export async function createOrganization(name: string) {
 
 export async function inviteMember(email: string, orgId: string, role: "admin" | "member" = "member") {
     const session = await auth();
-    // TODO: Add RBAC check (middleware or here)
     if (!session?.user?.id) throw new Error("Unauthorized");
 
-    // Check if inviter is owner/admin
     const memberRecord = await db.query.members.findFirst({
         where: and(eq(members.userId, session.user.id), eq(members.organizationId, orgId))
     });
@@ -40,16 +38,34 @@ export async function inviteMember(email: string, orgId: string, role: "admin" |
     }
 
     const token = crypto.randomUUID();
-    const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7); // 7 days
+    const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7);
 
     await db.insert(invitations).values({
         email,
         organizationId: orgId,
         role,
         token,
-        expiresAt
+        expiresAt,
+        status: "pending"
     });
 
-    // In a real app, send email here
     return token;
+}
+
+export async function removeMember(memberId: string, orgId: string) {
+    const session = await auth();
+    if (!session?.user?.id) throw new Error("Unauthorized");
+
+    const currentUserMember = await db.query.members.findFirst({
+        where: and(eq(members.userId, session.user.id), eq(members.organizationId, orgId))
+    });
+
+    if (!currentUserMember || currentUserMember.role !== "owner") {
+        // Only owners can remove for now suitable for demo
+        throw new Error("Insufficient permissions");
+    }
+
+    await db.delete(members).where(and(eq(members.id, memberId), eq(members.organizationId, orgId)));
+
+    revalidatePath(`/dashboard/${orgId}/team`);
 }
